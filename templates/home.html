@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+{% block title %}
+
+Food Control | TFG UAH
+
+{% endblock %}
+
+{% block style %}
+
+    body
+    {
+        padding-top: 50px;
+    background-color: #eee;
+
+
+
+    }
+    .navbar-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 20;
+}
+
+/* Flip around the padding for proper display in narrow viewports */
+.navbar-wrapper > .container {
+  padding-right: 0;
+  padding-left: 0;
+}
+.navbar-wrapper .navbar {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.navbar-wrapper .navbar .container {
+  width: auto;
+}
+
+
+  margin-bottom: 20px;
+  text-align: center;
+}
+.marketing h2 {
+  font-weight: normal;
+}
+.marketing .col-lg-4 p {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+    .test {
+     -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    }
+
+
+
+{% endblock %}
+{% block javascript %}
+<script>
+
+$( window ).load(function() {
+
+  $('#myModal').modal({backdrop: 'static'},'toggle');
+
+    $("#Citas").hover(function(){
+       $("#calendario").css("opacity","0.0")
+       $("#citas_descripcion").css("color","black")
+
+    }, function(){
+       $("#citas_descripcion").css("color","transparent")
+       $("#calendario").css("opacity","100")}
+    );
+
+    $("#lopd").hover(function(){
+
+       $("#datos_descripcion").css("color","black")
+       $("#datos-personales").css("opacity","0.0")
+
+    }, function(){
+       $("#datos_descripcion").css("color","transparent")
+       $("#datos-personales").css("opacity","100")}
+    );
+    $("#food-control").hover(function(){
+
+       $("#control-descripcion").css("color","black")
+       $("#comidas").css("opacity","0.0")
+
+    }, function(){
+       $("#control-descripcion").css("color","transparent")
+       $("#comidas").css("opacity","100")}
+    );
+
+    $("#estadistica").hover(function(){
+
+       $("#progreso_descripcion").css("color","black")
+       $("#chart").css("opacity","0.0")
+
+    }, function(){
+       $("#progreso_descripcion").css("color","transparent")
+       $("#chart").css("opacity","100")}
+    );
+
+    $("#pacientes").hover(function(){
+
+       $("#pacientes_descripcion").css("color","black")
+       $("#pacientes_personales").css("opacity","0.0")
+
+    }, function(){
+       $("#pacientes_descripcion").css("color","transparent")
+       $("#pacientes_personales").css("opacity","100")}
+    );
+
+
+
+    $("#Citas").click(function(e){
+        window.location = '{% url 'citas' username=request.user.get_username %}';
+    });
+
+    $("#lopd").click(function(e){
+        window.location = '{% url 'informacion' %}';
+    });
+    $("#food-control").click(function(e){
+        window.location = '{% url 'tipo_comida' %}';
+    });
+    $("#estadistica").click(function(e){
+        window.location = '{% url 'progreso_nutricional' username=request.user.get_username %}';
+    });
+    $("#pacientes").click(function(e){
+        window.location = '{% url 'busca_pacientes' %}';
+    });
+
+
+
+});
+
+
+
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+
+        {% if user.is_staff %}
+            <div style="margin-left: 20%; margin-top: 5%" class="row placeholders">
+
+                    <div id="pacientes" style=" width:30%;background-color:#e0e0e0; border-radius: 20%; padding-bottom: 5%; padding-top: 2%; margin-right: 10%; " class="col-xs-6 col-sm-3 placeholder ">
+                     <img style="margin-top: 5%; border-radius: 0%" id="pacientes_personales" src="{% static 'images/id-card-2.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+
+                     <span id="pacientes_descripcion" style="text-align: center; color: transparent" class="fa-layers-text fa-inverse" data-fa-transform="">Busque a sus Pacientes</span>
+
+                        <h4 style="margin-top: 0%; color: black;" id='datos_h4' style="color: white; ">Consulte sus pacientes</h4>
+                    </span>
+
+                    </div>
+
+                    <div id="estadistica" style=" width:30%;background-color:#e0e0e0; border-radius: 20%; padding-bottom: 5%; padding-top: 2%; margin-right: 0%; " class="col-xs-6 col-sm-3 placeholder ">
+                     <img style="margin-top: 5%; border-radius: 0%" id="chart" src="{% static 'images/bars-chart.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+
+                      <span id="progreso_descripcion" style="text-align: center; color: transparent" class="fa-layers-text fa-inverse" data-fa-transform="">Consulta historicamente las comidas de sus pacientes </span>
+
+                        <h4 style="margin-top: 0%; color: black;" id='citas_h4' style="color: white; ">Progreso</h4>
+
+                    </div>
+
+
+
+
+                </div>
+
+
+
+
+
+        {% else %}
+
+            {% if paciente_datos %}
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title" id="myModalLabel"> Completar perfil </h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" id="profile" action="{% url 'complete_profile' %}" class="form-group-sm input-group-sm ">
+                        <p style="" align="center"> Completa tu perfil completando los siguientes datos</p>
+                    {% csrf_token %}
+                    <br>
+                        <input type="hidden" name="user_modify" id="user_modify" value="{{ user.get_username }}">
+                    <div class="  form-group form-group-sm">
+
+                        <table class="table table-condensed">
+                        {% for field in form %}
+                            <tr>
+
+                                <td>
+
+                                {{ field|bootstrap_horizontal }}
+
+
+                        {% endfor %}
+                                </td>
+                            </tr>
+
+
+                        </table>
+                    </div>
+                    </form>
+
+                </div>
+            <br>
+                <div class=" modal-footer">
+                    <input   style="margin-right: 42%" class="btn  btn-primary  active btn-sm" id="test_validate"  form="profile" type="submit" value="Continuar"/>{% csrf_token %}
+                        </div>
+
+                    </div>
+                </div>
+        </div>
+            {% else %}
+                    {% include "messages.html" %}
+                <div style="margin-left: 5%; margin-top: 10%" class="row placeholders">
+
+                    <div id="lopd" style=" width:22%;background-color:#e0e0e0; border-radius: 20%; padding-bottom: 1%; padding-top: 2%; margin-right: 2%; " class="col-xs-6 col-sm-3 placeholder ">
+                     <img style="margin-top: 5%; border-radius: 0%" id="datos-personales" src="{% static 'images/id-card-2.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+
+                     <span id="datos_descripcion" style="text-align: center; color: transparent" class="fa-layers-text fa-inverse" data-fa-transform="">Consulta tus datos personales</span>
+
+                        <h4 style="margin-top: 0%; color: black;" id='datos_h4' style="color: white; ">Datos Personales</h4>
+                    </span>
+
+                    </div>
+                    <div id="Citas" style=" width:22%;background-color:#e0e0e0; border-radius: 20%; padding-bottom: 1%; padding-top: 2%; margin-right: 2%; " class="col-xs-6 col-sm-3 placeholder ">
+                     <img style="margin-top: 5%; border-radius: 0%" id="calendario" src="{% static 'images/calendar-4.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+
+                      <span id="citas_descripcion" style="text-align: center; color: transparent" class="fa-layers-text fa-inverse" data-fa-transform="">Programa,consulta y modifica tus citas</span>
+
+                        <h4 style="margin-top: 0%; color: black;" id='citas_h4' style="color: white; ">Citas</h4>
+                    </span>
+
+                    </div>
+                    <div id="food-control" style=" width:22%;background-color:#e0e0e0; border-radius: 20%; padding-bottom: 1%; padding-top: 2%; margin-right: 2%; " class="col-xs-6 col-sm-3 placeholder ">
+                     <img style="margin-top: 5%; border-radius: 0%" id="comidas" src="{% static 'images/cutlery.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+
+                      <span id="control-descripcion" style="text-align: center; color: transparent" class="fa-layers-text fa-inverse" data-fa-transform="">Lleva el control de todas tus comidas </span>
+
+                        <h4 style="margin-top: 0%; color: black;" id='citas_h4' style="color: white; ">Comidas</h4>
+                    </span>
+
+                    </div>
+
+                    <div id="estadistica" style=" width:22%;background-color:#e0e0e0; border-radius: 20%; padding-bottom: 1%; padding-top: 2%; margin-right: 0%; " class="col-xs-6 col-sm-3 placeholder ">
+                     <img style="margin-top: 5%; border-radius: 0%" id="chart" src="{% static 'images/bars-chart.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+
+                      <span id="progreso_descripcion" style="text-align: center; color: transparent" class="fa-layers-text fa-inverse" data-fa-transform="">Consulta historicamente todas tus comidas registradas </span>
+
+                        <h4 style="margin-top: 0%; color: black;" id='citas_h4' style="color: white; ">Progreso</h4>
+
+                    </div>
+
+
+
+                </div>
+            {% endif %}
+
+
+
+        {% endif %}
+
+{% endblock %}

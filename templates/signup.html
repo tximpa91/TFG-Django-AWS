@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+
+{% block title %}
+
+Food Control | TFG UAH
+
+{% endblock%}
+{% block style %}
+
+    body
+    {
+        margin-top : 20px;
+        background-color: #eee;
+    }
+
+
+{% endblock %}
+
+{% block content %}
+
+{% block javascript %}
+<script>
+var incorrect = false
+var correct = false
+var exist=false
+$("#id_first_name, #id_last_name, #id_username, #id_email, #id_password, #id_doctor, #id_genero, #id_estatura, #id_peso, #id_diabetico, #id_re_password").bind('keyup', function() {
+    if(allFilled()) {
+        var username =   $("#id_username").val()
+        $.ajax({
+        type:"POST",
+        url: "{% url 'validate_username' %}",
+        data: {
+            'username': username,
+            'csrfmiddlewaretoken':"{{ csrf_token }}"
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data.is_taken===false) {
+              if(correct==false ) {
+                  $("#id_username").parent().parent().removeClass().addClass('form-group has-success has-feedback');
+                  if ($("#id_password").parent().parent().attr('class')=='form-group has-success has-feedback')
+                      $('#register').prop('disabled',false);
+                  exist=false
+
+
+              }
+
+          }else{
+              if(incorrect==false) {
+
+                  $("#id_username").parent().parent().addClass(' has-error has-feedback');
+                  $('#register').prop('disabled',true);
+                  swal({
+                        type:'error',
+                        title:'Oops',
+                        html:'<a>El Usuario '+'<strong>'+username+'</strong>' + ' ya existe </a>'
+
+                         }
+                        )
+
+
+
+              }
+
+
+          }
+        },
+        error:function(exception){
+            console.log(exception)
+            alert('Exeption:'+exception);
+            event.preventDefault();
+
+        }
+      });
+
+
+
+    }
+});
+
+function allFilled() {
+    var filled = true;
+    $('body input').each(function() {
+        if($(this).val() == '') filled = false;
+
+    });
+    return filled;
+}
+
+
+
+$(document).ready(function() {
+  $("#id_re_password").keyup(validate);
+});
+
+
+
+
+function validate() {
+    var password1 = $("#id_password").val();
+    var password2 = $("#id_re_password").val();
+    var error=false;
+    var succes=false;
+    alert
+
+
+
+    if (password1 == password2) {
+        if (error) {
+
+
+            $("#id_password").parent().parent().removeClass().addClass('form-group has-success has-feedback');
+            $("#id_re_password").parent().parent().removeClass().addClass('form-group has-success has-feedback');
+            if (correct)
+                $("#register").prop('disabled',false);
+
+            error=false
+        }else{
+
+            $("#id_password").parent().parent().removeClass().addClass('form-group has-success has-feedback');
+            $("#id_re_password").parent().parent().removeClass().addClass('form-group has-success has-feedback');
+            if (correct)
+                $("#register").prop('disabled',false);
+            succes=true
+
+        }
+
+    }else {
+        if (succes){
+
+            $( "#id_password" ).parent().parent().removeClass().addClass('form-group has-error has-feedback');
+            $( "#id_re_password" ).parent().parent().removeClass().addClass('form-group has-error has-feedback');
+            $("#register").prop('disabled',true);
+            succes=false
+        }  else{
+
+             $( "#id_password" ).parent().parent().removeClass().addClass('form-group has-error has-feedback');
+            $( "#id_re_password" ).parent().parent().removeClass().addClass('form-group has-error has-feedback');
+            $("#register").prop('disabled',true);
+            error=true
+
+
+        }
+
+    }
+}
+
+
+
+
+
+</script>
+{% endblock %}
+    {% include "messages.html" %}
+
+    <div class="container-fluid main">
+        <form id="signup" method="post" action="{% url 'signup' %}">
+
+            {% csrf_token %}
+            <div class="  form-group form-group-sm">
+                <h1 class="lead"> Alta Usuario</h1>
+                <table class="table table-condensed">
+                    {% for field in form %}
+                    <tr>
+
+                        <td>
+
+                            {{ field|bootstrap_horizontal }}
+
+
+                    {% endfor %}
+                        </td>
+                    </tr>
+
+
+                    <br>
+                </table>
+                <div class="submit-row col-sm-4" >
+                    <input  id="register" disabled="true" class="btn  btn-primary btn-xs active" type="submit" value="Registrarse"/></td></tr>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

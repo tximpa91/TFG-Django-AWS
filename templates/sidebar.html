@@ -1,0 +1,118 @@
+
+{% if user.is_superuser %}
+
+
+
+
+
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="active"><a href="#">Worldline Iberia S.A <span class="sr-only">(current)</span></a></li>
+            <li><a href="{% url 'home' %}">Página de Inicio     </a></li>
+            <li><a href="home">Planificación     </a></li>
+            <li><a href="home">Imputación     </a></li>
+            <li><a href="admin">Administración     </a></li>
+
+            <li  data-toggle="collapse" data-target="#products2" class="collapsed ">
+                <a href="#"><i ></i>Tarea <span class="glyphicon glyphicon-chevron-down"></span></a>
+            </li>
+            <ul class="sub-menu collapse" id="products2">
+                <li><a href="{% url 'registrartarea' %}">Alta Tarea</a></li>
+                <li><a href="{% url 'registrarestado' %}">Modificar Tarea</a></li>
+                <li><a href="{% url 'registrarusuariocliente %}">Consulta</a></li>
+
+            </ul>
+            <li  data-toggle="collapse" data-target="#products" class="collapsed ">
+                <a href="#"><i ></i>Manteniemiento de Tablas <span class="glyphicon glyphicon-chevron-down"></span></a>
+            </li>
+            <ul class="sub-menu collapse" id="products">
+                <li><a href="{% url 'registrarcliente' %}">Registrar Cliente</a></li>
+                <li><a href="{% url 'registrarestado' %}">Registrar Estado</a></li>
+                <li><a href="{% url 'registrargrupo' %}">Registrar Grupo</a></li>
+                <li><a href="{% url 'registrartipotarea' %}">Registrar Tipo Tarea</a></li>
+                <li><a href="{% url 'registrarusuariosistema' %}">Registrar Usuario</a></li>
+                <li><a href="{% url 'registrarusuariocliente' %}">Registrar  Usuario Cliente</a></li>
+                <li><a href="{% url 'usuariogrupo' %}">Registrar  Usuario Cliente</a></li>
+            </ul>
+        </ul>
+    </div>
+
+    <!-- Page content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class=" main">
+
+
+                {% include "messages.html" %}
+
+            </div>
+
+        </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Menu toggle script -->
+<script>
+    $("#menu-toggle").click( function (e){
+        e.preventDefault();
+        $("#wrapper").toggleClass("menuDisplayed");
+    });
+</script>
+
+
+
+
+{% elif user.is_staff %}
+    <div class="col-sm-9 col-sm-offset-1 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header lead"> Esta conectado como:<strong> {{user.get_username}}</strong></h1>
+
+        {% include "messages.html" %}
+
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2  sidebar">
+                <ul class="nav nav-sidebar">
+                    <li class="active"><a href="#">Worldline Iberia S.A <span class="sr-only">(current)</span></a></li>
+                    <li><a href="home">Página de Inicio</a></li>
+                    <li><a href="registrarcliente">Registrar Cliente</a></li>
+                    <li><a href="registrarestado">Registrar Estado</a></li>
+                    <li><a href="registrarusuariocliente">Registrar  Usuario Cliente</a></li>
+                    <li><a href="registrargrupo">Registrar Grupo</a></li>
+                    <li><a href="registrartipotarea">Registrar Tipo Tarea</a></li>
+                    <li><a href="registrarusuariosistema">Registrar Usuario</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+{% else  %}
+    <div class="col-sm-9 col-sm-offset-1 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header lead"> Esta conectado como:<strong> {{user.get_username}}</strong> </h1>
+
+        {% include "messages.html" %}
+
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2  sidebar">
+                <ul class="nav nav-sidebar">
+                    <li class="active"><a href="#">Worldline Iberia S.A <span class="sr-only">(current)</span></a></li>
+                    <li><a href="home">Página de Inicio</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endif %}

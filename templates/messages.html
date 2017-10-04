@@ -1,0 +1,30 @@
+{% if messages %}
+
+
+    {% for message in messages %}
+        {% if message.tags == "success" %}
+
+            <script>
+                var texto = '{{ message }}'
+                texto = texto.replace("&lt;i&gt;","<i>")
+                texto = texto.replace("&lt;/i&gt;","</i>")
+                texto = texto.replace("&lt;br&gt;", "<br/>")
+
+                swal({type:'success',title:'Food Control', html:texto});
+            </script>
+
+
+        {% endif %}
+        {% if message.tags == "error" %}
+            <script>
+
+            swal({type:'error',title:'Food Control', html:'{{ message }}',});
+
+
+            </script>
+
+        {% endif %}
+
+    {% endfor %}
+
+{% endif %}

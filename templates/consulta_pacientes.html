@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+{% block title %}
+
+    Food Control | TFG UAH
+
+{% endblock %}
+{% block style %}
+
+    body
+    {
+
+    background-color: #eee;
+
+    }
+
+{% endblock %}
+
+
+{% block content %}
+
+
+
+    <form style="margin-top: 5%; margin-left: 3% " id="myform"  action="{% url 'login' %}" method="POST">{% csrf_token %}
+        <div  class="form-inline form-group-sm input-sm ">
+
+            {%  if queryset %}
+                <h3 style="text-align: center;"> Pacientes</h3>
+                <div  style=" " class="panel panel-default ">
+                    <div style=" background-color:#1b7b34" class="panel-heading">Pacientes Registrados: {{ resultado }}</div>
+                    <div onload="makeTableScroll()"class="table-responsive  ">
+                        <table id="myTable" class="table table-responsive  table-hover table-bordered table-condensed">
+                            <thead>
+                            <tr>
+
+                                <th style="background-color: darkgrey;" class="text-center ">Username</th>
+                                <th style="background-color: darkgrey;" class="text-center" > Nombre</th>
+                                <th style="background-color: darkgrey;" class="text-center" > Apellido</th>
+                                <th style="background-color: darkgrey;" class="text-center" > Email</th>
+                                <th style="background-color: darkgrey;"  class="text-center">Peso</th>
+                                <th style="background-color: darkgrey;" class="text-center" >Estatura</th>
+                                <th style="background-color: darkgrey;" class="text-center" > Diabetico </th>
+                                <th style="background-color: darkgrey;" class="text-center" > Número de citas</th>
+
+
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for instance , instance2 in queryset %}
+                                    <tr >
+                                        <td  style="padding: 0px;  margin: 0;" class="text-center td-especial" >{{instance.user__username}}
+                                         <a href="{% url 'citas' username=instance.user__username %}"><span  class="fa fa-calendar"> </span></a>
+                                         <a href="{% url 'progreso_nutricional' username=instance.user__username %}"><span  class="fa fa-chart-area"> </span></a>
+                                        </td>
+                                        <td  style="padding: 0px; margin: 0;" class="text-center" >{{instance.user__first_name}}   </td>
+                                        <td  style="padding: 0px; margin: 0;" class="text-center">{{instance.user__last_name}}</td>
+                                        <td   style="padding: 0px; margin: 0;" class="text-center" >{{instance.user__email}}</td>
+                                        <td  style="padding: 0px; margin: 0;" class="text-center">{{instance.peso}}</td>
+                                        <td   style="padding: 0px; margin: 0;" class="text-center">{{instance.estatura}}</td>
+                                         {% if instance.diabetico  %}
+                                            <td  style="padding: 0px; margin: 0;" class="text-center" >Si</td>
+                                            {% else %}
+                                         <td  style="padding: 0px; margin: 0;" class="text-center" >No</td>
+                                        {% endif %}
+
+                                        <td  style="padding: 0px; margin: 0;" class="text-center" >{{instance2}}</td>
+
+                                    </tr>
+                                {% endfor %}
+
+
+
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                    <div  style="padding: 5px;" class="panel-footer"> </div>
+                </div>
+
+            {% else %}
+                {% include "messages.html" %}
+            {% endif %}
+
+
+
+
+            </div>
+
+
+
+
+
+    </form>
+{% endblock %}
+
+
+
+
+
+
+

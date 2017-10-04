@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+{% load tz %}
+{% block title %}
+
+Food Control | TFG UAH
+
+{% endblock %}
+{% block javascript %}
+    <script>
+        list_eliminadas=[]
+        $(document).ready(function() {
+
+
+		/* initialize the external events
+		-----------------------------------------------------------------*/
+
+		$('#external-events .fc-event').each(function() {
+
+			// store data so the calendar knows to render an event upon drop
+			$(this).data('event', {
+				title: $.trim($(this).text()), // use the element's text as the event title
+				stick: true, // maintain when user navigates (see docs on the renderEvent method)
+			});
+
+			// make the event draggable using jQuery UI
+			$(this).draggable({
+				zIndex: 999,
+				revert: true,      // will cause the event to go back to its
+				revertDuration: 0  //  original position after the drag
+			});
+
+		});
+
+
+		/* initialize the calendar
+		-----------------------------------------------------------------*/
+
+		$('#calendar').fullCalendar({
+            height: 650,
+		    customButtons: {
+                 myCustomButton: {
+                     text: 'Guardar Citas',
+                     click: function() {
+                        $("#citas").val(JSON.stringify($("#calendar").fullCalendar("clientEvents").map(function(e) {
+                                    return {
+                                        start: e.start,
+                                        end: e.end,
+                                        title: e.title
+
+                                    };
+                         })));
+                        $("#citas_eliminadas").val(JSON.stringify(list_eliminadas.map(function(e) {
+                                    return {
+                                        start: e.start,
+                                        end: e.end,
+                                        title: e.title
+                                    };
+                         })));
+                         console.log($("#citas_eliminadas").val())
+                        $("#form_citas").submit();
+
+                     }
+                 }
+            },
+			header: {
+				left: 'prev,next today,myCustomButton',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			editable: true,
+			droppable: true, // this allows things to be dropped onto the calendar
+            events:[{% for obj in semana_imputacion %}
+                {
+                    title: "{{ obj.paciente__user__username}}",
+                    start: '{{ obj.fecha_cita |date:'Y-m-d'}}',
+                    end:  'false',
+                    icon:'times'
+
+                },
+            {% endfor %}
+
+
+            ],
+			drop: function(date) {
+                alert("El paciente: "+ $(this).data('event').title + " tiene una cita para la fecha   " + date.format());
+
+				if ($('#drop-remove').is(':checked')) {
+					// if so, remove the element from the "Draggable Events" list
+
+                  $(this).remove();
+
+				}
+			},dayClick: function(date, jsEvent, view) {
+                var existe=false
+                var newEvent = new Object();
+                    newEvent.title = '{{ paciente}}';
+                    newEvent.start = date.format();
+                    newEvent.end   = 'true'
+                    newEvent.icon ='times'
+                    var eventos =$('#calendar').fullCalendar('clientEvents');
+
+                for (i=0;i<eventos.length;i++){
+                    if (eventos[i].title==newEvent.title && eventos[i].start._i==date.format()){
+                        existe=true
+                        break;
+                    }
+
+                }
+                if (existe)
+                    alert("Ya existe una fecha planificada para ese día " + date.format())
+                else
+			        $('#calendar').fullCalendar( 'renderEvent', newEvent);
+
+
+
+
+
+    },
+     /*       eventDrop: function(event, delta, revertFunc) {
+                alert("El paciente: "+ event.title + " tiene una cita para la fecha   " + event.start.format());
+                if (!confirm("¿ Está seguro de cambiar esta cita?")) {
+
+                }
+            },*/
+            eventClick: function(calEvent, jsEvent, view) {
+                /*alert('Event: ' + calEvent.title);
+                alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+                alert('View: ' + view.name);*/
+
+                    // change the border color just for fun
+                $(this).css('border-color', 'red');
+
+            },
+            eventRender: function(event, element) {
+
+                if(event.icon){
+                        element.find(".fc-content").css('text-align','center');
+                        element.find(".fc-title").append(" <span style=\"position: absolute; right: 6%\" class=\"glyphicon glyphicon-remove-circle\" aria-hidden=\"true\"></span>");
+
+                }
+                element.bind('dblclick', function(event) {
+                    var cita = {title:$(this).data('fcSeg').event.title,
+                            start:$(this).data('fcSeg').event.start.format(),
+                            end:$(this).data('fcSeg').event.start.format()}
+                    if (!confirm("¿ Está seguro de eliminar esta cita ?")) {
+                        $(this).css('border-color', '#666');
+
+                    }else{
+                            list_eliminadas.push(cita)
+                            $('#calendar').fullCalendar('removeEvents', $(this).data('fcSeg').event._id);
+                            $("#citas_eliminadas").val(JSON.stringify(list_eliminadas.map(function (e) {
+                                return {
+                                    start: e.start,
+                                    end: e.end,
+                                    title: e.title
+                                };
+                            })));
+                            $.ajax({
+                                    type:"POST",
+                                    url: "{% url 'eliminar_citas' %}",
+                                    data: {
+                                        'citas_eliminadas': $("#citas_eliminadas").val(),
+                                        'csrfmiddlewaretoken':"{{ csrf_token }}"
+                                    },
+                                    dataType: 'json',
+                                    success: function (data) {
+                                      if (data.is_delete===false ) {
+                                          alert("No se pudo borrar su cita contacte con el administrador")
+                                      }
+                                    },
+                                    error:function(exception){
+                                        console.log(exception)
+                                        alert('Exeption:'+exception);
+                                        event.preventDefault();
+
+                                    }
+                                  });
+                        }
+
+
+
+                    });
+
+
+            },
+
+
+		});
+
+
+	});
+
+</script>
+
+
+
+{% endblock %}
+{% block style %}
+
+    body {
+		font-size: 14px;
+        padding-top: 2%;
+        background-color: #eee;
+	}
+
+	#calendar {
+        margin-left:10%;
+		width: 80%;
+        height:20%;
+
+
+
+	}
+    .iconcon:before{  //if icon not there then change :before with :after
+        font-family: "FontAwesome";
+        content: "\f1fd\00a0";   // \00a0 is blank space
+  color: #fff;
+}
+
+{% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+        {% include "messages.html" %}
+    <form id="form_citas" method="POST" action="{% url 'citas' username=paciente %}">
+         {% csrf_token %} 
+            <input type="hidden" name="citas" id="citas" value="">
+            <input type="hidden" name="citas_eliminadas" id="citas_eliminadas" value="">
+
+            <div class="container-fluid">
+
+                    <div id='calendar'></div>
+
+                    <div style='clear:both'></div>
+            </div>
+
+
+        </form>
+
+    </div>
+
+{% endblock %}

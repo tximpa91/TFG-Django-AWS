@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+
+{% block title %}
+
+Food Control | TFG UAH
+
+{% endblock%}
+{% block style %}
+
+    body
+    {
+        padding : 20px;
+        background-color: #eee;
+    }
+
+
+{% endblock %}
+
+{% block content %}
+
+{% block javascript %}
+<script>
+var incorrect = false
+var correct = false
+var exist=false
+$(window).load(function () {
+
+    $("#register").click(function (e) {
+
+       if(allFilled())
+           $("#modificar").submit()
+
+
+
+
+    });
+
+    $('#id_peso').keyup(function(e) {
+            var regex = /^\d+(\.\d{0,2})?$/g;
+            if (!regex.test(this.value)) {
+                this.value = '';
+            }
+        });
+    $('#id_estatura').keyup(function(e) {
+            var regex = /^\d+(\.\d{0,2})?$/g;
+            if (!regex.test(this.value)) {
+                this.value = '';
+            }
+        });
+
+    /*$("#id_first_name, #id_last_name, #id_username, #id_email,  #id_doctor,  #id_estatura, #id_peso").bind('keyup', function () {
+        if (allFilled()) {
+            $('#register').prop('disabled', false);
+
+        }else {
+            $('#register').prop('disabled', true);
+        }
+    });*/
+});
+
+
+
+function allFilled() {
+    var filled = true;
+    $('body input').each(function() {
+        if($(this).val() == '') {
+            $(this).parent().parent().addClass('form-group has-error has-feedback');
+
+            filled = false;
+        }
+
+    });
+    return filled;
+}
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}
+    {% include "messages.html" %}
+
+    <div class="container-fluid">
+        <form id="modificar" method="post" action="{% url 'informacion' %}">
+
+            {% csrf_token %}
+            <div id="info" class="  form-group form-group-sm">
+                <h1 class="lead"> Datos Personales</h1>
+                <table class="table table-condensed">
+                    {% for field in form %}
+                    <tr>
+
+                        <td>
+
+                            {{ field|bootstrap_horizontal }}
+
+
+                    {% endfor %}
+                        </td>
+                    </tr>
+
+
+                    <br>
+                </table>
+                <div class="submit-row col-sm-4" >
+                    <input  id="register"class="btn  btn-primary active btn-xs " type="button" value="Modificar"/></td></tr>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

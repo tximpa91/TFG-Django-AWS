@@ -1,0 +1,88 @@
+{% load staticfiles %}
+
+<style>
+
+    #brand-image
+    {
+        height: 50px;
+    }
+
+</style>
+<nav style="background-color: #1b7b34"class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+
+                <a class="navbar-brand" href="#" id="menu-toggle"><span class=" glyphicon glyphicon-th-list"></span></a>
+
+                <li class="dropdown"> <a href="#" data-toggle="dropdown"> Food Control <b class="caret"></b></a>
+                    <ul class="bullet dropdown-menu">
+                        <li><a href="{% url 'home' %}">Página de Inicio</a></li>
+
+                    </ul>
+                </li>
+
+                {% if request.user.is_authenticated %}
+                    {% if user.is_staff %}
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="display: inline-block;" class=""> <a href=#> <i style="color: white; " class="fa fa-lg fa-user-md"></i>     <strong >{{ request.user.get_username | capfirst}} </strong> </a></li>
+                    </ul>
+                    {% else %}
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class=""><a href=#>  <i class="fa  fa-user-circle fa-lg "data-fa-transform="grow-4"></i>    <strong>  {{ request.user.get_username |capfirst }} </strong> </a></li>
+                        </ul>
+                    {% endif %}
+                {% else %}
+                    {% if user == "AnonymousUser" %}
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class=""><a href=#>      <strong>{{ user }} s </strong> </a></li>
+                    </ul>
+                    {% endif %}
+
+
+
+                {% endif %}
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if eleccion %}
+
+                    <li> <a id="test"> Registrar Comida</a></li>
+                {% endif %}
+
+
+                <li> <a href="{% url 'home' %}">Inicio</a></li>
+
+                <li> <a href="{% url 'home' %}">Consulta</a></li>
+
+                <li> <a href="{% url 'home' %}">Contacto</a></li>
+
+
+                <li ><a href="{% url 'logout' %}">    <span class="col-sm-offset-0 glyphicon glyphicon-off"></span></a></li>
+
+
+
+
+
+            </ul>
+
+
+
+
+
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>

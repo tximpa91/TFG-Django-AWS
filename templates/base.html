@@ -1,0 +1,213 @@
+{% load staticfiles %}
+
+
+
+<!DOCTYPE html>
+<html lang="es" >
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>{% block title  %}{% endblock  %}</title>
+
+
+
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dropdowns-enhancement.css' %}" rel="stylesheet">
+
+
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="{% static 'css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/navbar-fixed-top.css' %}" rel="stylesheet">
+
+
+    <script src="{% static  'js/ie-emulation-modes-warning.js' %}"></script>
+
+
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+
+
+
+    <script type="text/javascript"src="{% static 'js/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/moment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/transition.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/webcalendar/fullcalendar.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/webcalendar/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/webcalendar/locale-all.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/webcalendar/es.js' %}"></script>
+    <script type="text/javascript"src="{% static 'js/bootstrap-datetimepicker.js' %}"></script>
+    <script type="text/javascript"src="{% static 'js/dropdowns-enhancement.js' %}"></script>
+
+    <script defer src="{% static 'js/packs/brands.js' %}"></script> 
+    <script defer src="{% static 'js/packs/regular.js' %}"></script> 
+    <script defer src="{% static 'js/packs/solid.js' %}"></script>
+     <script defer src="{% static 'js/packs/light.js' %}"></script> 
+    <script defer src="{% static 'js/v4-shims.js' %}"></script> 
+    <script  defer src="{% static 'js/fontawesome.js' %}"></script>
+
+
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.5/sweetalert2.js"></script>
+    <link  type="text/javascript" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.5/sweetalert2.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Volkhov" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:600" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Spinnaker" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-social.css' %}" rel="stylesheet">
+    <link href="{% static 'css/webcalendar/fullcalendar.css' %}" rel="stylesheet">
+    <link href="{% static 'css/webcalendar/fullcalendar.print.css' %}" rel='stylesheet' media='print'>
+    <link href="{% static 'css/webcalendar/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-datetimepicker.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="{% static 'js/d3.js' %}"></script>
+
+
+<style>
+
+    {% block style %}
+
+    {%endblock %}
+
+
+
+body {
+  /* Margin bottom by footer height */
+
+  margin-bottom: 60px;
+}
+
+.SocialContainer {
+    display: block;
+    width: 40%;
+    text-align: justify;
+    line-height: 0;
+    vertical-align: top;
+    padding: 10px 0; /* adjust as needed */
+    margin-left:1%;
+}
+.SocialContainer a {
+    margin: 0 10px; /* adjust as needed */
+}
+.SocialContainer:after {
+    content: '';
+    display: inline-block;
+    vertical-align: top;
+    width: 10%;
+    line-height: 1.5;
+}
+
+</style>
+</head>
+
+
+
+
+<body>
+ {% include "navbar.html" %}
+
+<div id="wrapper">
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav ">
+            <li style=" font-size: medium" ><a     href="{% url 'home' %}"><i style="margin-right: 10%; " class=" fa fa-home fa-lg  " aria-hidden="true"></i> Inicio </a> </li>
+        {% if request.user.is_authenticated %}
+            {% if user.is_staff %}
+                <li style="padding-left:1%; " ><a     href="{% url 'busca_pacientes' %}"><i style="margin-right: 10%; text-align: center " class=" fa fa-lg fa-address-card-o " aria-hidden="true"></i> Pacientes </a> </li>
+                <li style="padding-left:1%; "  data-toggle="collapse" data-target="#products" class="collapsed ">
+                    <a href="#"><i style="margin-right: 11%; margin-top: 2%; text-align: center " class=" fa fa-lg fa-briefcase " aria-hidden="true"></i> Manteniemiento </a>
+                </li>
+            <ul style="list-style: disc" class="sub-menu collapse" id="products">
+                <li style="margin-left: 14.2%;padding-left: 5.2%"><a href="{% url 'paciente_doctor' %}">Registrar Cliente</a></li>
+                <li style="margin-left: 14.2%;padding-left: 5.2%"><a href="{% url 'alimento' %}">Registrar Alimento</a></li>
+            </ul>
+            {% else %}
+                <li style="padding-left: 1%;"   ><a     href="{% url 'citas' username=request.user.get_username %}"><i style="margin-right: 12%;text-align: center  "  class=" fa fa-lg fa-calendar-alt " data-fa-transform="grow-4" aria-hidden="true"></i> Citas</a> </li>
+                <li style="padding-left: 1%;"   ><a     href="{% url 'tipo_comida' %}"><i style="margin-right: 12%;text-align: center  " class=" fa  fa-cutlery fa-lg " data-fa-transform="grow-4" aria-hidden="true"></i> Registrar Comida </a> </li>
+                <li  style="padding-left: 1%;"  ><a     href="{% url 'progreso_nutricional' username=request.user.get_username %}"><i style="margin-right: 10%;text-align: center  " class=" fa fa-lg fa-bar-chart " aria-hidden="true" data-fa-transform="grow-4"></i> Progreso Nutricional </a> </li>
+                <li   style="padding-left: 1%;"><a     href="{% url 'informacion' %}"><i style="margin-right: 12%;text-align: center  " class=" fa fa-lg  fa-user-circle" aria-hidden="true" data-fa-transform="grow-4"></i> Datos Personales </a> </li>
+
+
+
+
+            {% endif %}
+
+        {% endif %}
+        </ul>
+    </div>
+    <!-- Menu toggle script -->
+    <script>
+        $("#menu-toggle").click( function (e){
+            e.preventDefault();
+            $("#wrapper").toggleClass("menuDisplayed");
+        });
+
+
+    </script>
+
+
+    <!-- Page content -->
+    <div id="page-content-wrapper" class="container-fluid">
+
+    {% block content %}
+    {% endblock %}
+
+    </div>
+</div>
+
+
+
+
+<div  class="container-fluid">
+
+
+    <footer style="width: 100%;" class="footer">
+
+
+        <div class="container-fluid ">
+            <div style="margin-left: 0%; margin-top: 0.5%;" class="row placeholders">
+                    <a style="; text-align: center;color: white;margin-right: 1% " >Redes sociales</a>
+
+                <a style="color:white; text-align: center; margin-right: 1%" >
+                     <span class="fa fa-twitter fa-lg "data-fa-transform="grow-2"></span>
+                </a>
+                <a style="color:white; ;  text-align: center;margin-right: 1%" >
+                   <span  class="fa fa-instagram fa-lg" data-fa-transform="grow-4"></span>
+                </a>
+                <a style=" color:white; ; text-align: center;margin-right: 1%" >
+                  <span class="fab fa-facebook-f fa-lg" data-fa-transform="grow-4"></span>
+                </a>
+
+
+                 <a style="color:white;  ;  text-align: center;margin-right: 1%" >
+                   <span  class="fab fa-google-plus-g fa-lg" data-fa-transform="grow-4"></span>
+                </a>
+          </div>
+        </div>
+
+
+
+
+    </footer>
+
+</div>
+{% block javascript %}{% endblock %}
+
+</body>
+</html>
+

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block title %}
+
+   Food Control | TFG UAH
+
+{% endblock %}
+{% block style %}
+
+    body
+    {
+
+
+    background-color: #eee;
+
+    }
+
+    img.clipped {
+    width: 8A0%; /*Scales image to 150% width of parent container*/
+    float: left; /*Floats image to left of container - clipping right hand side*/
+    float: right; /*Floats image to right of container - clipping left hand side*/
+}
+.div {
+    width: 22%; /*Use this to control width of the parent container, hence the image*/
+    overflow: hidden;
+
+}
+
+{% endblock %}
+{% block javascript %}
+<script>
+
+var choose =''
+$( window ).load(function() {
+$("#desayuno").click(function(){
+
+    window.location = '{% url 'registrar_comida' tipo='desayuno' %}'
+});
+
+$("#almuerzo").click(function(){
+
+    window.location = '{% url 'registrar_comida' tipo='almuerzo' %}'
+
+});
+
+$("#cena").click(function(){
+
+    window.location = '{% url 'registrar_comida' tipo='cena' %}'
+});
+
+$("#merienda").click(function(){
+
+    window.location = '{% url 'registrar_comida' tipo='merienda' %}'
+
+})
+});
+
+
+</script>
+{% endblock %}
+
+{% block content %}
+
+    {% include "messages.html" %}
+    <form  id="tipo" style="margin-top: 15%; margin-left: 5%" class="container-fluid main "  method="POST"  >{% csrf_token %}
+
+        <input type="hidden" id="eleccion" name="eleccion" value="">
+    <div class="row placeholders">
+            <div style=" width:22%;background-color: #e0e0e0; border-radius: 20%; padding-bottom: 1%; padding-top: 2%; margin-right: 2% " class="col-xs-6 col-sm-3 placeholder">
+              <img style="border-radius: 0" id="desayuno" src="{% static 'images/breakfast.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+              <h4>Desayuno</h4>
+
+            </div>
+            <div style="width:22%; background-color: #e0e0e0; border-radius: 20%; padding-bottom: 1%; padding-top: 2%;margin-right: 2% " class="col-xs-6 col-sm-3 placeholder">
+              <img style="border-radius: 0" id="almuerzo" src="{% static 'images/spaghetti.svg' %}" width="180" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
+              <h4>Almuerzo</h4>
+
+            </div>
+            <div style="width:22%; background-color: #e0e0e0; border-radius: 20%; padding-bottom: 1%; padding-top: 2%;margin-right: 2% " class="col-xs-6 col-sm-3 placeholder">
+              <img style="border-radius: 0%; " id="cena" src="{% static 'images/dish.svg' %}" width="180" height="200" class="img-responsive " alt="Generic placeholder thumbnail">
+              <h4>Cena</h4>
+
+            </div>
+            <div style="width:22%; background-color: #e0e0e0; border-radius: 20%; padding-bottom: 2%; padding-top: 2%;margin-right: 2% " class="col-xs-6 col-sm-3 placeholder">
+              <img style="border-radius: 0" id="merienda" src="{% static 'images/chips.svg' %}" width="180" height="200" class="img-responsive clipped" alt="Generic placeholder thumbnail">
+              <h4>Merienda</h4>
+
+            </div>
+          </div>
+
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+

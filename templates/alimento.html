@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+
+{% block title %}
+
+Food Control | TFG UAH
+
+{% endblock%}
+{% block style %}
+
+    body
+    {
+        padding : 20px;
+        background-color: #eee;
+    }
+
+
+{% endblock %}
+
+{% block content %}
+
+{% block javascript %}
+<script>
+var incorrect = false
+var correct = false
+var exist=false
+$("#id_nombre, #id_tipo, #id_calorias, #id_agua, #id_grasa, #id_proteina").bind('keyup', function() {
+    if(allFilled()) {
+        $('#register').prop('disabled',false);
+    }
+});
+
+function allFilled() {
+    var filled = true;
+    $('body input').each(function() {
+        if($(this).val() == '') filled = false;
+
+    });
+    return filled;
+}
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}
+    {% include "messages.html" %}
+
+    <div class="container-fluid">
+        <form id="signup" method="post" action="{% url 'alimento' %}">
+
+            {% csrf_token %}
+            <div class="  form-group form-group-sm">
+                <h1 class="lead"> Registrar Alimento</h1>
+                <table class="table table-condensed">
+                    {% for field in form %}
+                    <tr>
+
+                        <td>
+
+                            {{ field|bootstrap_horizontal }}
+
+
+                    {% endfor %}
+                        </td>
+                    </tr>
+
+
+                    <br>
+                <tr>
+                    <td>
+                        <div class="submit-row col-sm-4" >
+                            <input  id="register" disabled="true" class="btn  btn-primary btn-xs active" type="submit" value="Agregar"/>
+                        </div>
+                    </td>
+                </tr>
+                </table>
+
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

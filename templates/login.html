@@ -1,0 +1,192 @@
+﻿{% extends "base.html" %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+
+{% block title %}
+
+Food Control | TFG UAH
+
+{% endblock %}
+
+{% block style %}
+
+body
+{
+padding-top: 40px;
+padding-bottom: 40px;
+background-color: #eee;
+
+}
+    .ButtonContainer {
+    display: block;
+    width: 30%;
+    overflow: auto;
+    text-align: justify;
+    line-height: 0;
+    vertical-align: top;
+    padding: 10px 0; /* adjust as needed */
+    margin-left:29.1%;
+}
+.ButtonContainer a {
+    margin: 0 10px; /* adjust as needed */
+}
+.ButtonContainer:after {
+    content: '';
+    display: inline-block;
+    vertical-align: top;
+    width: 30%;
+    line-height: 1.5;
+}
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+var first_time = false;
+$( window ).load(function() {
+    $("#id_username_password").parent().append("<span style=\"text-align: center; color: transparent;font-size: small;margin-left: 10%\" id=\"login\" class=\"help-inline col-sm-offset-1\">Este Usuario no existe</span>")
+
+  // Run code
+
+
+
+$( "#test_validate" ).click(function( event ) {
+    var username = $("#id_username_password").val()
+    var test ;
+    if (username==='' || username==null || username===undefined){
+        $( "#id_username_password" ).parent().parent().addClass(' has-error has-feedback');
+
+
+
+    }else{
+
+        $.ajax({
+        type:"POST",
+        url: "{% url 'validate_username' %}",
+        data: {
+            'username': username,
+            'csrfmiddlewaretoken':"{{ csrf_token }}"
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data.is_taken===false ) {
+              if (first_time == false) {
+                  $("#id_username_password").parent().parent().addClass('has-error has-feedback');
+                  $("#login").css('color', '#a94442');
+
+                  first_time=true
+              }
+          }else{
+              $("#change_password").submit()
+
+          }
+        },
+        error:function(exception){
+            console.log(exception)
+            alert('Exeption:'+exception);
+            event.preventDefault();
+
+        }
+      });
+
+    }
+});
+});
+</script>
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"> Reestablecer Contraseña</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" id="change_password" action="{% url 'reset' %}" class="form-group-sm input-group-sm ">
+                        <p style="" align="center">Reestablece tu contraseña  usando tu <ins><strong> Nombre de Usuario</strong> </ins></p>
+
+
+                    {% csrf_token %}
+                    <br>
+                    {% bootstrap_form form2  field_class='col-sm-offset-3' layout='inline'  %}
+
+
+
+                    </form>
+
+                </div>
+            <br>
+                <div style="margin-left: 0%" class=" modal-footer">
+                    <button style="margin-right: 0%" type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cerrar</button>
+                    <input   style="margin-right: 0%" class=" btn btn-sm green-color-total" id="test_validate"  form="change_password" type="button" value="Continuar"/>{% csrf_token %}
+                </div>
+
+            </div>
+        </div>
+</div>
+
+<div style="" class="col-sm-3 col-lg-offset-4  " >
+    {% include "messages.html" %}
+    <div style="position: relative"  >
+        <form class="form-group form-group-sm input-sm" method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <legend style="padding-right: 20px;" class="text-center">Iniciar Sesión</legend>
+            <div>
+                {{ form| bootstrap}}
+
+                <input style="font-size: small" class=" col-sm-3  btn  btn-primary btn-sm btn-block" type="submit" value="Login">
+                  <br> <br>
+                   <div style="" class="">
+								      <a style=" text-align: center;align-content: center;left: auto;" class="  btn btn-default btn-sm btn-block" href="{% url 'signup' %}" role="button" >Registrarse</a><br>
+								      <p style="margin-left:15.5%; right:auto;left: auto;"  >o</p>
+								      <p style="margin-left:11%; right:auto;left: auto;">registrarse con</p>
+								
+								
+								  </div>
+								
+								  <div class="ButtonContainer ">
+								      <a style="border-radius: 50% ; text-align: center; " href="{% url 'social:begin' 'twitter' %}" class="  btn-md btn  btn-social-icon btn-twitter">
+								           <span class="fa fa-twitter" data-fa-transform="down-3"></span>
+								      </a>
+								     <a style=" border-radius:50% ; text-align: center;"class=" btn-md btn  btn-social-icon btn-facebook" href="{% url 'social:begin' 'facebook' %}">
+								        <span class="fa fa-facebook" data-fa-transform="down-3"></span>
+								     </a>
+								
+								       <a style="border-radius: 50% ;  text-align: center;" class="  btn-md btn  btn-social-icon btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+								         <span  class="fa fa-google" data-fa-transform="down-3"></span>
+								      </a><br>
+								
+								
+								  </div>
+								  <div class="col-sm-offset-1">
+								      <button style="margin-left: 23.3%; right:auto;left: auto;"  type="button" class="btn btn-link btn-sm "  data-toggle="modal" data-target="#myModal">He olvidado mi contraseña</button>
+								  </div>
+
+        </form>
+    </div>
+
+</div>
+   
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
+

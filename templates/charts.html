@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load bootstrap %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load tz %}
+
+{% block title %}
+
+
+Food Control | TFG UAH
+
+{% endblock %}
+{% block javascript %}
+<script>
+$( window ).load(function() {
+    $("#ir_a").click(function (e) {
+
+        if($("#id_idSemana").val()===''){
+            swal({type:'error',title:'Food Control', html:'Rellene el campo semana',})
+            e.preventDefault();
+        }else{
+            $("#week").val($("#id_idSemana").val())
+
+        }
+    })
+
+});
+function dashboard(id, fData){
+    var barColor = 'steelblue';
+    function segColor(c){ return {low:"#807dba", mid:"#e08214",high:"#41ab5d"}[c]; }
+
+    // compute total for each state.
+    fData.forEach(function(d){d.total=d.freq.low+d.freq.mid+d.freq.high;});
+
+    // function to handle histogram.
+    function histoGram(fD){
+        var hG={},    hGDim = {t: 60, r: 0, b: 30, l: 0};
+        hGDim.w = 500 - hGDim.l - hGDim.r,
+        hGDim.h = 300 - hGDim.t - hGDim.b;
+
+        //create svg for histogram.
+
+
+
+        var hGsvg = d3.select(id).append("svg")
+            .attr("width", hGDim.w + hGDim.l + hGDim.r)
+            .attr("height", hGDim.h + hGDim.t + hGDim.b).append("g")
+            .attr("transform", "translate(" + hGDim.l + "," + hGDim.t + ")");
+
+
+
+        // create function for x-axis mapping.
+        console.log()
+        var x = d3.scale.ordinal().rangeRoundBands([0, hGDim.w], 0.1)
+                .domain(fD.map(function(d) { return d[0]; }));
+
+        // Add x-axis to the histogram svg.
+        hGsvg.append("g").attr("class", "x axis")
+            .attr("transform", "translate(0," + hGDim.h + ")")
+            .call(d3.svg.axis().orient("bottom").scale(x)
+
+            );
+
+        // Create function for y-axis map.
+        var y = d3.scale.linear().range([hGDim.h, 0])
+                .domain([0, d3.max(fD, function(d) { return d[1]; })]);
+
+        // Create bars for histogram to contain rectangles and freq labels.
+        var bars = hGsvg.selectAll(".bar").data(fD).enter()
+                .append("g").attr("class", "bar");
+
+        //create the rectangles.
+        bars.append("rect")
+            .attr("x", function(d) { return x(d[0]); })
+            .attr("y", function(d) { return y(d[1]); })
+            .attr("width", x.rangeBand())
+            .attr("height", function(d) { return hGDim.h - y(d[1]); })
+            .attr('fill',barColor)
+            .on("mouseover",mouseover)// mouseover is defined below.
+            .on("mouseout",mouseout);// mouseout is defined below.
+
+        //Create the frequency labels above the rectangles.
+        bars.append("text").text(function(d){ return d3.format(",")(d[1])})
+            .attr("x", function(d) { return x(d[0])+x.rangeBand()/2; })
+            .attr("y", function(d) { return y(d[1])-5; })
+            .attr("text-anchor", "middle");
+
+        function mouseover(d){  // utility function to be called on mouseover.
+            // filter for selected state.
+            }
+
+        function mouseout(d){    // utility function to be called on mouseout.
+
+        }
+
+        // create function to update the bars. This will be used by pie-chart.
+        hG.update = function(nD, color){
+            // update the domain of the y-axis map to reflect change in frequencies.
+            y.domain([0, d3.max(nD, function(d) { return d[1]; })]);
+
+            // Attach the new data to the bars.
+            var bars = hGsvg.selectAll(".bar").data(nD);
+
+            // transition the height and color of rectangles.
+            bars.select("rect").transition().duration(500)
+                .attr("y", function(d) {return y(d[1]); })
+                .attr("height", function(d) { return hGDim.h - y(d[1]); })
+                .attr("fill", color);
+
+            // transition the frequency labels location and change value.
+            bars.select("text").transition().duration(500)
+                .text(function(d){ return d3.format(",")(d[1])})
+                .attr("y", function(d) {return y(d[1])-5; });
+        }
+        return hG;
+    }
+
+    // function to handle pieChart.
+
+
+    // function to handle legend.
+
+    // calculate total frequency by segment for all state.
+    var tF = ['low','mid','high'].map(function(d){
+        return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))};
+    });
+
+    // calculate total frequency by state for all segment.
+    var sF = fData.map(function(d){return [d.State,d.total];});
+
+    var hG = histoGram(sF) // create the histogram.
+
+}
+</script>
+
+<script>
+
+
+
+
+var freqData={{ chart|safe}}
+var freqData2 ={{ glucosa|safe }}
+dashboard('#dashboard',freqData);
+dashboard('#dashboard2',freqData2);
+</script>
+
+
+
+{% endblock %}
+{% block style %}
+
+
+path {  stroke: #fff; }
+path:hover {  opacity:0.9; }
+rect:hover {  fill:blue; }
+.axis {  font: 10px sans-serif; }
+.legend tr{    border-bottom:1px solid grey; }
+.legend tr:first-child{    border-top:1px solid grey; }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {  display: none; }
+.legend{
+    margin-bottom:76px;
+    display:inline-block;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.legend td{
+    padding:4px 5px;
+    vertical-align:bottom;
+}
+.legendFreq, .legendPerc{
+    align:right;
+    width:50px;
+}
+
+
+{% endblock %}
+
+{% block content %}
+
+    <nav style="margin-left: 10%"  class="  navbar navbar-default-2  ">
+{% if request.user.is_staff %}
+
+    {% endif %}
+
+        <div id="navbar" class="navbar-collapse collapse">
+
+            <ul class="nav navbar-nav">
+
+
+
+                </ul>
+
+            <ul  class="nav navbar-nav navbar-right">
+                    <li>
+                        <p style="color:white;"> Período desde : {{ dias_inicio }}  </p>
+
+                    </li>
+                    <li>
+                         <p style="color:white; padding-left: 10px; word-spacing: 10px">   hasta {{ dias_final }}</p>
+                    </li>
+
+                   <li>
+                    <p  style="color: white; margin-left: 10px; margin-right: 10px;"> Semana: <a style="color: #1b7b34"  class="text-center" >{{ form }} </a>
+                        <button form="progreso"  id="ir_a" class="btn  btn-primary btn-xs" name="ir_a" type="submit" style="margin-right: 0;  background-color: transparent;border: transparent">
+                            <span class="glyphicon glyphicon-search"></span></button>
+                    </p>
+                       </li>
+
+                    <li><button form="progreso" class="btn  btn-primary btn-xs"  name="retroceder" type="submit" style="padding-right: 0px; background-color: transparent;border: transparent">
+                        <span class="glyphicon glyphicon-arrow-left" ></span>
+                        </button>
+                    </li>
+                    <li><button form="progreso" class="btn  btn-primary btn-xs" name="avanzar" type="submit" style="padding-right: 10px;  background-color: transparent;border: transparent">
+                     <span class="glyphicon glyphicon-arrow-right"></span>
+                    </button>
+                    </li>
+
+
+            </ul>
+
+            <form id="progreso" method="post" action="{% url 'progreso_nutricional' username=user  %}"> {% csrf_token %}
+                <input type="hidden" id="week" name="week" value="{{ semana }}">
+                <input type="hidden" name="week_2" value="{{ semana }}">
+            </form>
+
+            <ul class="nav navbar-nav navbar-left ">
+                <p style="color:white;"> Paciente: {{ user.first_name }} {{ user.last_name }} </p>
+            </ul>
+
+
+        </div><!--/.nav-collapse -->
+
+</nav>
+
+
+    {% if diabetes %}
+
+
+
+        <div class=""  style="margin-left: 10%; float: left; text-align: center;" id='dashboard'>
+            <h2 >Calorías registradas</h2>
+        </div>
+
+        <div class=""  style="margin-left: 5%; float: left;text-align: center;" id='dashboard2'>
+            <h2 >Índice de Glucosa</h2>
+        </div>
+    {% else %}
+        <div class=""  style="text-align: center"  id='dashboard'>
+            <h2 >Calorías registradas</h2>
+        </div>
+
+
+    {% endif %}
+
+
+
+
+
+
+
+
+
+{% endblock %}

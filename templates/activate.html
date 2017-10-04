@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<div  class="col-sm-3 col-lg-offset-4 container-fluid" >
+    {% include "messages.html" %}
+    <div style="position: relative"  > 
+        <form class="form-group form-group-sm input-sm" method="POST" action="{% url 'login' %}"> 
+            {% csrf_token %} 
+
+            <legend style="padding-right: 20px;" class="text-center">Sign In</legend>  
+            <div>
+                {{ form| bootstrap}}
+
+                <input class="btn  btn-primary btn-sm btn-block" type="submit" value="Login"> 
+                  <br>
+                <a style="margin-left: 34%" class="col-sm-offset-3 btn btn-default btn-xs" href="{% url 'signup' %}" role="button">Registrarse</a>
+            <button  style="margin-left: 15%" type="button" class="btn btn-link btn-xs col-md-offset-1"  data-toggle="modal" data-target="#myModal">He olvidado mi contraseña</button>
+
+            </div>
+
+        </form>
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
